@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysMsgMapper">
+    
+    <resultMap type="SysMsg" id="SysMsgResult">
+        <result property="id"    column="id"    />
+        <result property="msg"    column="msg"    />
+        <result property="date"    column="date"    />
+    </resultMap>
+
+    <sql id="selectSysMsgVo">
+        select id, msg, date from sys_msg
+    </sql>
+
+    <select id="selectSysMsgList" parameterType="SysMsg" resultMap="SysMsgResult">
+        <include refid="selectSysMsgVo"/>
+        <where>  
+            <if test="msg != null  and msg != ''"> and msg = #{msg}</if>
+            <if test="date != null "> and date = #{date}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysMsgById" parameterType="Long" resultMap="SysMsgResult">
+        <include refid="selectSysMsgVo"/>
+        where sys_msg.id = #{id}
+    </select>
+        
+    <insert id="insertSysMsg" parameterType="SysMsg">
+        insert into sys_msg
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="msg != null">msg,</if>
+            <if test="date != null">date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="msg != null">#{msg},</if>
+            <if test="date != null">#{date},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysMsg" parameterType="SysMsg">
+        update sys_msg
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="msg != null">msg = #{msg},</if>
+            <if test="date != null">date = #{date},</if>
+        </trim>
+        where sys_msg.id = #{id}
+    </update>
+
+    <delete id="deleteSysMsgById" parameterType="Long">
+        delete from sys_msg where id = #{id}
+    </delete>
+
+    <delete id="deleteSysMsgByIds" parameterType="String">
+        delete from sys_msg where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
